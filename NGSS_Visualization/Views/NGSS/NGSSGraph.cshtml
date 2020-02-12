@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewBag.Title = "NGSSGraph";
+}
+
+<div class="row">
+
+   
+    <div class="col-lg-7" style="">
+        <div class='input-group' style='margin-top:15px; margin-left:22px; margin-bottom: 10px;width:100%'>
+            <input class="form-control" id="searchBar" type="text" style="min-width:100px;max-width: 110px;margin-right:5px; border-radius:4px; margin-top:3px; height:23px" aria-label="Search">
+            <input type="button" id="submitButton" name="submitButton" class="btn btn-info" value="Generate" style="line-height:2px; margin-top:0.31%; margin-right:10px; height:23px; display:inline-flex; align-items:center" />
+
+            <span id="providersDropdown" class="customDropdown" type="text" style="border-radius:4px; border-bottom:solid grey 1px;  border-top:solid grey 1px; border-left:solid grey 1px;  border-right:solid grey 1px;  width:300px">
+            --Providers-- <container class="customDropdown"  style="font-size:8pt">&#9660</container> 
+            </span>
+            <div id="Providers" class="customDropdown"  style="display:none; z-index:10000; border:1px solid grey; border-top:none;  width:60%; height:80vh; overflow:auto;  overflow-y:auto; position:absolute; top:21px; left:208px; background:white">
+                <div id="AllDocs" class="customDropdown" style="margin-left:5px; margin-top:5px">
+                    <input class="customDropdown" type="checkbox" style="vertical-align:top" id="ShowAllDocs" />
+                    <label class="customDropdown" style="vertical-align:bottom; font-weight:normal">All</label>
+                   
+                </div>
+                <div class="customDropdown" style="margin-left:5px; height:20px">
+                    <input class="customDropdown customCheck"  type="checkbox" style="vertical-align:top" id="TeachEngineering" onclick="CustomDropdownTE()"/>
+                    <label id="TeachEngineering_Label" class="customDropdown"  style="vertical-align:bottom; font-weight:normal">TE <span id="TeachEngineering_Count"></span> <span class="customDropdown" id="TE_Toggle1">&#9660</span><span style="display:none" class="customDropdown" id="TE_Toggle2">&#9650</span> <span id="TELabel"></span></label>
+
+                </div>
+                <div id ="TEDocTypes" class="customDropdown" style="display:none">
+                <div class="customDropdown" style="margin-left:20px; vertical-align:top">
+                    <input class="customDropdown customCheck" type="checkbox" style="vertical-align:top" id="TE_Activities" />
+                    <label class="customDropdown " style="vertical-align:bottom; font-weight:normal">Activities</label>
+                </div>
+                <div class="customDropdown" style="margin-left:20px; vertical-align:top">
+                    <input class="customDropdown customCheck" type="checkbox" style="vertical-align:top" id="TE_Lessons" />
+                    <label class="customDropdown " style="vertical-align:bottom; font-weight:normal">Lessons</label>
+                </div>
+                <div class="customDropdown" style="margin-left:20px; vertical-align:top">
+                    <input class="customDropdown customCheck" type="checkbox" style="vertical-align:top" id="TE_Units" />
+                    <label class="customDropdown "  style="vertical-align:bottom; font-weight:normal">Units</label>
+                </div>
+                </div>
+                
+
+            </div>
+
+            @*<div id="start" style="margin-left:210px; position:fixed; z-index:10000; margin-top: 1px;">
+                <div id="dropdownToggle" class="customDropdown" style="background:white; position:fixed; border:solid grey; border-radius:4px; width:100px; border-width:1px; font-size:10pt;">
+                    <div id="alignments" class="customDropdown" style="font-size:10.5pt; height: 18.4px; margin-left:5px">  --Provider--  <span id="dropdownSymbol" class="customDropdown" style="float:right; margin-top:3px; margin-right:5px; font-size:6pt">&#9660</span></div>
+                </div>
+                </div>*@
+                <select id="networkDepth" style='width:80px; border-radius:4px; margin-left:13px; font-size:10pt'>
+                    <option disabled value="0">--Depth--</option>
+                    <option value="1">1</option>
+                    <option selected value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+
+                <select id="displayType" style='width:105px; margin-left:4px;border-radius:4px;font-size:10pt'>
+                    <option value="0">--Node label--</option>
+                    <option value="asn">ASN codes</option>
+                    <option selected value="ngss">NGSS codes</option>
+                </select>
+                <select id="graphView" style='width:70px; border-radius:4px;font-size:10pt; margin-left:4px; height:20px; margin-top:3px'>
+                    <option disabled value="None">--View--</option>
+                    <option value="NGSS">NGSS...</option>
+                    <option value="CC">CC...</option>
+                    <option value="DCI">DCI...</option>
+                    <option value="SEP">SEP...</option>
+                    <option selected value="Topic">Topic...</option>
+                </select>
+
+
+
+                <select id="categoryStandardsList" style='width:115px; border-radius:4px;font-size:10pt; margin-left:4px; height:20px; margin-top:3px'>
+                    <option selected disabled value="0">--Category--</option>
+                </select>
+
+                <select id="lowgrade" style="width:100px; margin-left:6px; border-radius:4px; font-size:10pt; height:20px; margin-top:3px">
+                    <option selected select disabled value="None">--Lowgrade--</option>
+                    <option value="0">K</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6-8</option>
+                    <option value="7">9-12</option>
+                </select>
+                <select id="highgrade" style="width:100px; margin-left:4px; border-radius:4px; font-size:10pt; height:20px; margin-top:3px">
+                    <option selected select disabled value="None">--Highgrade--</option>
+                    <option value="0">K</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6-8</option>
+                    <option value="7">9-12</option>
+                </select>
+                <select id="layoutOptions" style="border-radius:4px; width:50px; margin-left:4px">
+                    <option value="None" disabled>--Layout--</option>
+                    <option selected value="KK">KK</option>
+                    <option value="FR">FR</option>
+                </select>
+
+            </div>
+
+            <div id="networkContainer" style="height:82vh; margin-left:20px;background:#F9F9F6">    </div>
+            <div id="theLegend" style="top:75vh; position:absolute; margin-left:3.2%">
+                <div id="label1" style="font-size: 9pt; margin-left:2%; width:215px; margin-top:0px; position:absolute; float:left;border-radius:3px ; padding-left:4px">Topics <select style="float:right" id="TopicsToggle"><option value="On">On</option><option value="Off">Off</option></select></div>
+                <div id="label2" style="font-size: 9pt;  margin-left:2%; width:215px; margin-top:20px; position:absolute; float:left;border-radius:3px; padding-left:4px">Performance Expectations <select style="float:right" id="PEToggle"><option value="On">On</option><option value="Off">Off</option></select></div>
+                <div id="label3" style="font-size: 9pt; margin-left:2%; width:215px; margin-top:40px; position:absolute; float:left;border-radius:3px; padding-left:4px">Science and Engr Practices<select style="float:right" id="SEPToggle"><option value="On">On</option><option value="Off">Off</option></select></div>
+                <div id="label4" style="font-size: 9pt; margin-left:2%; width:215px; margin-top:60px; position:absolute; float:left;border-radius:3px; padding-left:4px">Disiplinary Core Ideas <select style="float:right" id="DCIToggle"><option value="On">On</option><option value="Off">Off</option></select></div>
+                <div id="label5" style="font-size: 9pt; margin-left:2%; width:215px; margin-top:80px; position:absolute; float:left;border-radius:3px; padding-left:4px">Crosscutting Concepts <select style="float:right" id="CCToggle"><option value="On">On</option><option value="Off">Off</option></select></div>
+            </div>
+
+        </div>
+
+    <div class="stdTable col-lg-3" style=" margin-top:38px; margin-left:1.4% ;padding-right:0%; padding-left:0%;width:18%; ">
+        <span id="standardsTableHeader" style="font-size:10pt; font-weight:bold">Standards</span>
+        <div style="height:84vh; overflow-y:auto;" class="scroller">
+            <table class="table" style="width:100%;  font-size:10pt" id="t1">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width:100%; padding:0px"></th>
+                    </tr>
+                </thead>
+                <tbody id='t1Body'>
+                    <tr></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="docsTable col-lg-3" style="margin-top:38px ;padding-right:0%; margin-left:.3%; width:18%">
+        <span id="alignmentsTableHeader" style="font-size:10pt; font-weight:bold">Aligned Resources</span>
+        <div style="height:84vh; overflow-y:auto">
+            <table class="table" style="line-height: 1.2 ;width:100%; font-size:10pt; table-layout: fixed" id="t2">
+                <tr>
+                    <th scope="col" style="padding:0px"><div id=t2Title></div></th>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+@section Scripts
+{
+
+    <script src="~/Scripts/BuildGraph/Graph.js"></script>
+    <script src="~/Scripts/BuildGraph/Globals.js"></script>
+    <script src="~/Scripts/BuildGraph/DataStore.js"></script>
+    <script src="~/Scripts/BuildGraph/Main.js"></script>
+    <script src="~/Scripts/VisJS/vis.js"></script>
+    <script type="text/javascript">
+        doMain();
+    </script>
+}
