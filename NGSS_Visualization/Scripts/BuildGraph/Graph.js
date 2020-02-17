@@ -423,7 +423,12 @@ class Graph {
         }
         else {
             this.Edges[edgeId] = edge
-        }   
+        }  
+
+        //if edge is being added from standard to resource, add the resource to that standards list of displaying resources
+        if (this.Nodes[id1].Type == NodeTypes.RESOURCE) {
+            this.Nodes[id2].DisplayedResources[id1] = { Id: id1, Provider: this.Nodes[id1].Provider };
+        }
     }
 
 
@@ -677,6 +682,7 @@ class StandardNode extends Node {
         this.Url = null;
         this.Highgrade = null;
         this.Lowgrade = null;
+        this.DisplayedResources = []; //So we can quickly build the resource table with this node is selected. 
     }
 }
 

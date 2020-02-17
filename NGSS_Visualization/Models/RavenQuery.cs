@@ -15,21 +15,29 @@ namespace NGSS_Visualization.Models
     public static class RavenQuery 
     {
 
-        public static  GraphData QueryGraphDataAsync()
+        public static  GraphData QueryGraphDataAsync(string certPath)
         {
-            
+            //Set the connection parameters based on whether we are using our local RavenDB or the cloud service. 
+            bool UseLocalDB = false;
+
+            var Urls = new[] { "https://a.prod.te.ravendb.cloud" };
+            var Database = "NGSS_Network_Test";
+            var cert = new System.Security.Cryptography.X509Certificates.X509Certificate2(certPath, "azureraven", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.MachineKeySet);
+            if (UseLocalDB)
+            {
+                Urls = new[] { "http://localhost:8081" };
+                Database = "Prod_TE_Port";
+                cert = null;
+            }
+
+
             GraphData graphData = new GraphData();
-            var cert = new System.Security.Cryptography.X509Certificates.X509Certificate2(@"C:\\Users\hoglundb\Downloads\prod.te.client.certificate.pfx", "azureraven", System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.MachineKeySet);
+
             using (DocumentStore store = new DocumentStore
             {
-
-                
-                Urls = new[] { "http://localhost:8081" },
-               Database = "Prod_TE_Port",
-
-                //Certificate = cert,
-               // Urls = new[] { "https://a.prod.te.ravendb.cloud" },
-               // Database = "NGSS_Network_Test",
+                Urls = Urls,
+                Certificate = cert,
+                Database = Database
             })
             {
                 store.Initialize();

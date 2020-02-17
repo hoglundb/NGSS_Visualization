@@ -113,6 +113,107 @@ async function BuildStandardsTable() {
 }
 
 
+//Builds the aligned resources table based on a selected standard 
+function BuildResourcesTable(nodeID) {
+
+    //get all the resource nodes connected to this standard
+    var node = GraphObj.Nodes[nodeID];
+    var resourceIds = node.DisplayedResources;
+    for (var i in resourceIds) {
+
+        //get the resource and provider as defined in the DataStoreObj. 
+        var prov = DataStoreObj.Providers[resourceIds[i].Provider]
+        var resource = prov.Resources[resourceIds[i].Id];
+      //  console.log(resource)
+
+        //Build out the table row and add it 
+        if (resource.Summary == "") resource.Summary = "No Summary Available."
+        
+        var html = '<tr style="background:' + prov.color + '" id=' + resource.Id + ' onclick="ResourceSelectAction(\'' + resource.Id + '\')"><td>'; // FIXME. Not sure we want this as the row id.
+        html += '<span  style ="color: blue; cursor: pointer;" >' + prov.Name + '</span> <br>';
+        html += '<span>'+ _TruncateResourceSummary(resource.Summary, resource.Title) + '</span>';
+        html += '</td></tr>';
+        $('#t2').append(html);
+
+    }
+}
+
+
+//unlighlights/highlights the table row and the coorisponding resource in the graph. 
+function ResourceSelectAction(nodeId) {
+
+    //unhighlight avery row in the table
+    $('#t2 > tbody  > tr').each(function (e) {
+
+        try {
+            var id = this.id
+            var nodeRow = GraphObj.Nodes[this.id];
+            if (!nodeRow) return;
+            this.style.background = nodeRow.color
+        }
+        catch{
+            console.log("Cannot Highlight Resources Table row");
+        }
+        
+    });
+
+
+    var clickedNode = GraphObj.Nodes[nodeId];
+    document.getElementById(nodeId).style.background = clickedNode.highlightColor
+}
+
+
+//shows the full resource summary for the row in the resources table. 
+function _ShowFullResourceSummary(id) {
+
+    var doc = document.getElementById(id + "-doc");
+
+    doc.style.display = "inline"
+    var e = document.getElementById(id + "-elipsis");
+    e.style.display = "none";
+
+    var e = document.getElementById(id + "-less");
+    e.style.display = "inline";
+    var m = document.getElementById(id + "-more");
+    m.style.display = "none";
+}
+
+
+//Hides part of the resource summary for the row in the resources table
+function _showLessResourceSummary(id) {
+    var doc = document.getElementById(id + "-doc");
+    doc.style.display = "none";
+    var e = document.getElementById(id + "-elipsis");
+    e.style.display = "inline";
+    var m = document.getElementById(id + "-more");
+    m.style.display = "inline";
+}
+
+
+//Trancates the full resource description and emplements a show/hide feature for the resources table. 
+function _TruncateResourceSummary(des, id) {
+    if (!des) return "error"
+    des = des.substring(0, des.length);
+    if (des.length > 100) {
+        var newId = id.toString();
+        //des = des.replace(/<br>/gi, "\n");
+        //des = des.replace(/<p.*>/gi, "\n");
+        //des = des.replace(/<a.*href="(.*?)".*>(.*?)<\/a>/gi, " $2 (Link->$1) ");
+        //des = des.replace(/<(?:.|\s)*?>/g, "");
+
+        var newId = id.replace(/ /g, '')
+        return "<span 'style= display:inline'> " + des.substring(0, 100) +
+            '<div style = "display:inline" id = ' + newId + '-elipsis' + '>' + '...' + '</div>' +
+            "</span>" + "<span id = " + newId + '-doc' + " style = 'display:none'>" + des.substring(100, des.length) +
+            "<span style = 'color:blue; cursor: pointer'  id = " + newId + '-less' + ' onclick = _showLessResourceSummary(\'' + newId + '\')>' + ' less' + "</span>" +
+            "</span>" + '<span  onclick = "_ShowFullResourceSummary(\'' + newId + '\')">  <span  style = "color:blue; cursor: pointer" id = \'' + newId + "-more" + '\' > more</span></span>';
+    }
+    else {
+        return des + '.';
+    }
+}
+
+
 //Formats the description of a standard for the Standards Table. If the description is too long, we truncate it by default. 
 function FormatStdDescription(des, sCode, lowgrade, highgrade) {
 
@@ -211,12 +312,20 @@ function DrawGraph() {
 
         var clickedNode = GraphObj.Nodes[nodeID];
         var t = clickedNode.Type;
+
+        //handle node click action for standard nodes 
         if (t == NodeTypes.CC || t == NodeTypes.SEP || t == NodeTypes.DCI || t == NodeTypes.PE || t == NodeTypes.TOPIC) {
+            //perform highlight actions on graph and standards table 
             UnighlightAllNodes();
             HighlightNode(nodeID);
             UnhighlightStandardsTableRows();
             HighlightStandardsTableRow(nodeID)
             document.getElementById(nodeID).scrollIntoView();
+
+            //Build the aligned resources table
+            if (t != NodeTypes.TOPIC) {
+                BuildResourcesTable(nodeID);
+            }
         } 
         UnighlightAllNodes();
         HighlightNode(nodeID);
@@ -609,6 +718,13 @@ function BuildProvidersDropdown() {
 //add event listeners for dropdowns and clicky stuff.
 window.onload = function () {
 
+
+    //set the color of the graph legend to be the same as the defined node colors. 
+    $("#label1").css("background", NGSSColors.PURPLE);
+    $("#label2").css("background", NGSSColors.GREY);
+    $("#label3").css("background", NGSSColors.BLUE);
+    $("#label4").css("background", NGSSColors.ORANGE);
+    $("#label5").css("background", NGSSColors.GREEN);
 
     //make sure the custom dropdown is closed if we click outside it. All elements in the custom dropdown have a "customDropdown" class
     $(window).click(function (e) {    

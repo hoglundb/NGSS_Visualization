@@ -40,8 +40,8 @@ namespace NGSS_Visualization.Controllers
         [HttpPost]
         public   JsonResult GetGraphData()
         {
-
-            var data = RavenQuery.QueryGraphDataAsync();
+            var certPath = Server.MapPath("~/DBCert/prod.te.client.certificate.pfx");
+            var data = RavenQuery.QueryGraphDataAsync(certPath);
 
             JsonResult result = Json(new {
                                     categories = JsonConvert.SerializeObject(data.Categories),

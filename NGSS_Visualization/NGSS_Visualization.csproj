@@ -6804,6 +6804,7 @@
     <Content Include="App_Data\R_foo\R-3.6.2\tests\utf8-regex.R" />
     <Content Include="App_Data\R_foo\R-3.6.2\tests\WinUnicode.dat" />
     <Content Include="App_Data\R_foo\R-3.6.2\unins000.dat" />
+    <Content Include="DBCert\prod.te.client.certificate.pfx" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\BuildGraph\DataStore.js" />
     <Content Include="Scripts\BuildGraph\Globals.js" />
